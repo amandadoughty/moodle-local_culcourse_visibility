@@ -17,8 +17,7 @@
 /**
  * CUL Course Visibility version information
  *
- * @package    local
- * @subpackage course_visibility
+ * @package    local_course_visibility
  * @copyright  2016 Tim Gagen and Amanda Doughty
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  *
@@ -26,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2016011404; // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version   = 2016011900; // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires  = 2014110400; // Requires this Moodle version.
 $plugin->component = 'local_culcourse_visibility'; // Full name of the plugin (used for diagnostics).
 $plugin->maturity = MATURITY_BETA;
-$plugin->release = '2.0.0 (Build: 2016011403)';
+$plugin->release = '2.0.0 (Build: 2016011900)';

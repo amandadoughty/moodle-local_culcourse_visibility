@@ -24,15 +24,27 @@
  */
 namespace local_culcourse_visibility\task;
 
+/**
+ * Simple task to update the course visibility.
+ *
+ * @copyright  2016 Tim Gagen and Amanda Doughty
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class update_course_visibility extends \core\task\scheduled_task {
 
+    /**
+     * Get a descriptive name for this task (shown to admins).
+     *
+     * @return string
+     */
     public function get_name() {
         // Shown in admin screens.
         return get_string('updatecoursevisibility', 'local_culcourse_visibility');
     }
 
     /**
-     * Update course visibility if the startdate has become due.
+     * Update course visibility if the start date has become due.
+     *
      * @return void
      */
     public function execute() {
