@@ -24,4 +24,8 @@
  */
 
 $string['pluginname'] = 'CUL Course Visibility Update';
+$string['hidecourses'] = 'Hide courses';
+$string['hidecourses_desc'] = 'Update course visibility based on end date';
+$string['showcourses'] = 'Show courses';
+$string['showcourses_desc'] = 'Update course visibility based on start date';
 $string['updatecoursevisibility'] = 'Update course visibility based on start date';

@@ -15,18 +15,37 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * CUL Course Visibility version information
+ * Admin settings
+ *
  *
  * @package    local_culcourse_visibility
- * @copyright  2016 Tim Gagen and Amanda Doughty
+ * @copyright  2017 Amanda Doughty
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
  */
 
-defined('MOODLE_INTERNAL') || die();
+defined('MOODLE_INTERNAL') || die;
 
-$plugin->version   = 2017080202; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2014110400; // Requires this Moodle version.
-$plugin->component = 'local_culcourse_visibility'; // Full name of the plugin (used for diagnostics).
-$plugin->maturity = MATURITY_BETA;
-$plugin->release = '2.1.0 (Build: 2017080202)';
+if ($hassiteconfig) {
+	global $DB;
+
+	$settings = new admin_settingpage('local_culcourse_visibility', 'CUL Course Visibility');
+	$ADMIN->add('localplugins', $settings);
+
+	$settings->add(new admin_setting_configcheckbox(
+		'local_culcourse_visibility/showcourses',
+		get_string('showcourses', 'local_culcourse_visibility'),
+		get_string('showcourses_desc', 'local_culcourse_visibility'),
+		1
+		)
+	);
+
+	$settings->add(new admin_setting_configcheckbox(
+		'local_culcourse_visibility/hidecourses',
+		get_string('hidecourses', 'local_culcourse_visibility'),
+		get_string('hidecourses_desc', 'local_culcourse_visibility'),
+		0
+		)
+	);
+}
+
+	
