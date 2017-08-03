@@ -46,7 +46,7 @@ class update_course_visibility extends \core\task\scheduled_task {
     }
 
     /**
-     * Update course visibility if the start date has become due.
+     * Update course visibility.
      *
      * @return void
      */
@@ -92,6 +92,11 @@ class update_course_visibility extends \core\task\scheduled_task {
         mtrace(($end - $start) / 60 . ' mins');
     }
 
+    /**
+     * Make course visible if the start date has become due.
+     *
+     * @return void
+     */
     private function show_courses($courses) {
         global $DB;
 
@@ -105,6 +110,11 @@ class update_course_visibility extends \core\task\scheduled_task {
         }
     }
 
+    /**
+     * Hide course if the end date has become due.
+     *
+     * @return void
+     */
     private function hide_courses($courses) {
         global $DB;
 

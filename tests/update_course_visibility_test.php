@@ -17,9 +17,8 @@
 /**
  * This file contains the unittests for scheduled tasks.
  *
- * @package   core
- * @category  phpunit
- * @copyright 2013 Damyon Wiese
+ * @package   local_culcourse_visibility
+ * @copyright 2017 Amanda Doughty
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
