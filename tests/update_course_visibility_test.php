@@ -24,11 +24,12 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
-// require_once(__DIR__ . '/fixtures/task_fixtures.php');
+
+// ... vendor/bin/phpunit local_culcourse_visibility_update_course_visibility_testcase
+// local/culcourse_visibility/tests/update_course_visibility_test.php.
 
 /**
  * Test class for update course visibility task.
- * vendor/bin/phpunit local_culcourse_visibility_update_course_visibility_testcase local/culcourse_visibility/tests/update_course_visibility_test.php
  *
  * @package local_culcourse_visibility
  * @copyright 2017 Amanda Doughty
@@ -36,10 +37,10 @@ defined('MOODLE_INTERNAL') || die();
  */
 class local_culcourse_visibility_update_course_visibility_testcase extends advanced_testcase {
 
-	/** @var array of stdClass $course New courses created to test task */
+    /** @var array of stdClass $course New courses created to test task */
     protected $courses = [];
 
-	/**
+    /**
      * Setup function - we will create courses with differing start and end dates.
      */
     protected function setUp() {
@@ -48,45 +49,46 @@ class local_culcourse_visibility_update_course_visibility_testcase extends advan
         $this->resetAfterTest(true);
 
         $today = time();
+        // Course 2 should be hidden.
         $yesterday = time() - (24 * 60 * 60);
         $tomorrow = time() + (24 * 60 * 60);
 
         $properties = [
-        	'startdate' => $today,
-        	'enddate' => $tomorrow,
-        	'visible' => 0
+            'startdate' => $today,
+            'enddate' => $tomorrow,
+            'visible' => 0
         ];
 
         $this->courses[1] = $this->getDataGenerator()->create_course($properties);
 
         $properties = [
-        	'startdate' => $tomorrow,
-        	'enddate' => $tomorrow,
-        	'visible' => 0
+            'startdate' => $tomorrow,
+            'enddate' => $tomorrow,
+            'visible' => 0
         ];
 
         $this->courses[2] = $this->getDataGenerator()->create_course($properties);
 
         $properties = [
-        	'startdate' => $yesterday,
-        	'enddate' => $today,
-        	'visible' => 1
+            'startdate' => $yesterday,
+            'enddate' => $today,
+            'visible' => 1
         ];
 
         $this->courses[3] = $this->getDataGenerator()->create_course($properties);
 
         $properties = [
-        	'startdate' => $yesterday,
-        	'enddate' => $yesterday,
-        	'visible' => 1
+            'startdate' => $yesterday,
+            'enddate' => $yesterday,
+            'visible' => 1
         ];
 
         $this->courses[4] = $this->getDataGenerator()->create_course($properties);
 
         $properties = [
-        	'startdate' => $today,
-        	'enddate' => $today,
-        	'visible' => 0
+            'startdate' => $today,
+            'enddate' => $today,
+            'visible' => 0
         ];
 
         $this->courses[5] = $this->getDataGenerator()->create_course($properties);
@@ -100,7 +102,7 @@ class local_culcourse_visibility_update_course_visibility_testcase extends advan
     public function test_update_course_visibility_none() {
         global $CFG;
 
-        $task = \core\task\manager::get_scheduled_task('\\local_culcourse_visibility\\task\\update_course_visibility');        
+        $task = \core\task\manager::get_scheduled_task('\\local_culcourse_visibility\\task\\update_course_visibility');
         $this->assertInstanceOf('\local_culcourse_visibility\task\update_course_visibility', $task);
         // Change task settings.
         set_config('showcourses', 0, 'local_culcourse_visibility');
@@ -108,11 +110,11 @@ class local_culcourse_visibility_update_course_visibility_testcase extends advan
         $task->execute();
         $this->reload_courses();
 
-       	// Course 1 should be hidden.
-       	// Course 2 should be hidden. 
-       	// Course 3 should be visible.
-       	// Course 4 should be visible.
-       	// Course 5 should be hidden.
+        // Course 1 should be hidden.
+        // Course 2 should be hidden.
+        // Course 3 should be visible.
+        // Course 4 should be visible.
+        // Course 5 should be hidden.
         $this->assertEquals(0, $this->courses[1]->visible);
         $this->assertEquals(0, $this->courses[2]->visible);
         $this->assertEquals(1, $this->courses[3]->visible);
@@ -127,7 +129,7 @@ class local_culcourse_visibility_update_course_visibility_testcase extends advan
     public function test_update_course_visibility_start() {
         global $CFG;
 
-        $task = \core\task\manager::get_scheduled_task('\\local_culcourse_visibility\\task\\update_course_visibility');        
+        $task = \core\task\manager::get_scheduled_task('\\local_culcourse_visibility\\task\\update_course_visibility');
         $this->assertInstanceOf('\local_culcourse_visibility\task\update_course_visibility', $task);
         // Change task settings.
         set_config('showcourses', 1, 'local_culcourse_visibility');
@@ -136,10 +138,10 @@ class local_culcourse_visibility_update_course_visibility_testcase extends advan
         $this->reload_courses();
 
         // Course 1 should be visible.
-       	// Course 2 should be hidden. 
-       	// Course 3 should be visible.
-       	// Course 4 should be visible.
-       	// Course 5 should be visible.
+        // Course 2 should be hidden.
+        // Course 3 should be visible.
+        // Course 4 should be visible.
+        // Course 5 should be visible.
         $this->assertEquals(1, $this->courses[1]->visible);
         $this->assertEquals(0, $this->courses[2]->visible);
         $this->assertEquals(1, $this->courses[3]->visible);
@@ -154,7 +156,7 @@ class local_culcourse_visibility_update_course_visibility_testcase extends advan
     public function test_update_course_visibility_end() {
         global $CFG;
 
-        $task = \core\task\manager::get_scheduled_task('\\local_culcourse_visibility\\task\\update_course_visibility');        
+        $task = \core\task\manager::get_scheduled_task('\\local_culcourse_visibility\\task\\update_course_visibility');
         $this->assertInstanceOf('\local_culcourse_visibility\task\update_course_visibility', $task);
 
         // Change task settings.
@@ -164,10 +166,10 @@ class local_culcourse_visibility_update_course_visibility_testcase extends advan
         $this->reload_courses();
 
         // Course 1 should be hidden.
-       	// Course 2 should be hidden. 
-       	// Course 3 should be hidden.
-       	// Course 4 should be visible.
-       	// Course 5 should be hidden.
+        // Course 2 should be hidden.
+        // Course 3 should be hidden.
+        // Course 4 should be visible.
+        // Course 5 should be hidden.
         $this->assertEquals(0, $this->courses[1]->visible);
         $this->assertEquals(0, $this->courses[2]->visible);
         $this->assertEquals(0, $this->courses[3]->visible);
@@ -182,7 +184,7 @@ class local_culcourse_visibility_update_course_visibility_testcase extends advan
     public function test_update_course_visibility_both() {
         global $CFG;
 
-        $task = \core\task\manager::get_scheduled_task('\\local_culcourse_visibility\\task\\update_course_visibility');        
+        $task = \core\task\manager::get_scheduled_task('\\local_culcourse_visibility\\task\\update_course_visibility');
         $this->assertInstanceOf('\local_culcourse_visibility\task\update_course_visibility', $task);
 
         // Change task settings.
@@ -192,10 +194,10 @@ class local_culcourse_visibility_update_course_visibility_testcase extends advan
         $this->reload_courses();
 
         // Course 1 should be visible.
-       	// Course 2 should be hidden. 
-       	// Course 3 should be hidden.
-       	// Course 4 should be visible.
-       	// Course 5 should be hidden.
+        // Course 2 should be hidden.
+        // Course 3 should be hidden.
+        // Course 4 should be visible.
+        // Course 5 should be hidden.
         $this->assertEquals(1, $this->courses[1]->visible);
         $this->assertEquals(0, $this->courses[2]->visible);
         $this->assertEquals(0, $this->courses[3]->visible);
@@ -213,6 +215,6 @@ class local_culcourse_visibility_update_course_visibility_testcase extends advan
 
         $courses = $DB->get_records('course');
         // Reset the array keys. NB The front page will be $this->courses[0].
-        $this->courses = array_values($courses);         
+        $this->courses = array_values($courses);
     }
 }

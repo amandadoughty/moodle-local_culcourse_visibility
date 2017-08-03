@@ -26,26 +26,24 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($hassiteconfig) {
-	global $DB;
+    global $DB;
 
-	$settings = new admin_settingpage('local_culcourse_visibility', 'CUL Course Visibility');
-	$ADMIN->add('localplugins', $settings);
+    $settings = new admin_settingpage('local_culcourse_visibility', 'CUL Course Visibility');
+    $ADMIN->add('localplugins', $settings);
 
-	$settings->add(new admin_setting_configcheckbox(
-		'local_culcourse_visibility/showcourses',
-		get_string('showcourses', 'local_culcourse_visibility'),
-		get_string('showcourses_desc', 'local_culcourse_visibility'),
-		1
-		)
-	);
+    $settings->add(new admin_setting_configcheckbox(
+        'local_culcourse_visibility/showcourses',
+        get_string('showcourses', 'local_culcourse_visibility'),
+        get_string('showcourses_desc', 'local_culcourse_visibility'),
+        1
+        )
+    );
 
-	$settings->add(new admin_setting_configcheckbox(
-		'local_culcourse_visibility/hidecourses',
-		get_string('hidecourses', 'local_culcourse_visibility'),
-		get_string('hidecourses_desc', 'local_culcourse_visibility'),
-		0
-		)
-	);
+    $settings->add(new admin_setting_configcheckbox(
+        'local_culcourse_visibility/hidecourses',
+        get_string('hidecourses', 'local_culcourse_visibility'),
+        get_string('hidecourses_desc', 'local_culcourse_visibility'),
+        0
+        )
+    );
 }
-
-	

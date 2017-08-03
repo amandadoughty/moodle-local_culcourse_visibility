@@ -22,7 +22,10 @@
  * @copyright 2016 Tim Gagen and Amanda Doughty
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_culcourse_visibility\task;
+
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Simple task to update the course visibility.
@@ -50,7 +53,7 @@ class update_course_visibility extends \core\task\scheduled_task {
     public function execute() {
         global $CFG, $DB;
 
-        $start = time();        
+        $start = time();
         // Use the configured timezone.
         date_default_timezone_set($CFG->timezone);
         // Course start dates are always set to midnight but we will check the whole day in case the value has been
@@ -62,8 +65,8 @@ class update_course_visibility extends \core\task\scheduled_task {
         $config = get_config('local_culcourse_visibility');
 
         if ($config->showcourses) {
-            // Get list of courses to update.     
-            mtrace("\n  Searching for courses to make visible ...");       
+            // Get list of courses to update.
+            mtrace("\n  Searching for courses to make visible ...");
             // If startdate is today and visibility = 0 then set visibility = 1.
             $select = "visible = 0 AND startdate BETWEEN {$beginofday} AND {$endofday}";
             if ($showcourses = $DB->get_records_select('course', $select)) {
