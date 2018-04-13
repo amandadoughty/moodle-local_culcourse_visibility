@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2017080202; // The current plugin version (Date: YYYYMMDDXX).
+$plugin->version   = 2017080203; // The current plugin version (Date: YYYYMMDDXX).
 $plugin->requires  = 2014110400; // Requires this Moodle version.
 $plugin->component = 'local_culcourse_visibility'; // Full name of the plugin (used for diagnostics).
-$plugin->maturity = MATURITY_BETA;
-$plugin->release = '2.1.0 (Build: 2017080202)';
+$plugin->maturity = MATURITY_STABLE;
+$plugin->release = '2.1.1 (Build: 2017080203)';
