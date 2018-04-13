@@ -15,116 +15,205 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * A scheduled task for updating the course visibility based on the start date.
+ * This file contains the unittests for scheduled tasks.
  *
  * @package   local_culcourse_visibility
- * @category  task
- * @copyright 2016 Tim Gagen and Amanda Doughty
+ * @copyright 2017 Amanda Doughty
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_culcourse_visibility\task;
-
 defined('MOODLE_INTERNAL') || die();
 
+// ... vendor/bin/phpunit local_culcourse_visibility_update_course_visibility_testcase
+// local/culcourse_visibility/tests/update_course_visibility_test.php.
+
 /**
- * Simple task to update the course visibility.
+ * Test class for update course visibility task.
  *
- * @copyright  2016 Tim Gagen and Amanda Doughty
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package local_culcourse_visibility
+ * @copyright 2017 Amanda Doughty
+ * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class update_course_visibility extends \core\task\scheduled_task {
+class local_culcourse_visibility_update_course_visibility_testcase extends advanced_testcase {
+
+    /** @var array of stdClass $course New courses created to test task */
+    protected $courses = [];
 
     /**
-     * Get a descriptive name for this task (shown to admins).
-     *
-     * @return string
+     * Setup function - we will create courses with differing start and end dates.
      */
-    public function get_name() {
-        // Shown in admin screens.
-        return get_string('updatecoursevisibility', 'local_culcourse_visibility');
-    }
-
-    /**
-     * Update course visibility.
-     *
-     * @return void
-     */
-    public function execute() {
-        global $CFG, $DB;
-
-        $start = time();
-        // Use the configured timezone.
-        date_default_timezone_set($CFG->timezone);
-        // Course start dates are always set to midnight but we will check the whole day in case the value has been
-        // manually updated.
-        $beginofday = strtotime('midnight', time());
-        $endofday   = strtotime('tomorrow', $beginofday) - 1;
-        $showcourses = array();
-        $hidecourses = array();
-        $config = get_config('local_culcourse_visibility');
-
-        if ($config->showcourses) {
-            // Get list of courses to update.
-            mtrace("\n  Searching for courses to make visible ...");
-            // If startdate is today and visibility = 0 then set visibility = 1.
-            $select = "visible = 0 AND startdate BETWEEN {$beginofday} AND {$endofday}";
-            if ($showcourses = $DB->get_records_select('course', $select)) {
-                $this->show_courses($showcourses);
-            }
-        }
-
-        if ($config->hidecourses) {
-            // Get list of courses to update.
-            mtrace("\n  Searching for courses to hide ...");
-            // If enddate is today and visibility = 1 then set visibility = 0.
-            $select = "visible = 1 AND enddate BETWEEN {$beginofday} AND {$endofday}";
-            if ($hidecourses = $DB->get_records_select('course', $select)) {
-                $this->hide_courses($hidecourses);
-            }
-        }
-
-        if (!$showcourses && !$hidecourses) {
-            mtrace("  Nothing to do, except ponder the boundless wonders of the Universe, perhaps. ;-)\n");
-        }
-
-        $end = time();
-        mtrace(($end - $start) / 60 . ' mins');
-    }
-
-    /**
-     * Make course visible if the start date has become due.
-     *
-     * @return void
-     */
-    private function show_courses($courses) {
+    protected function setUp() {
         global $DB;
 
-        mtrace("\n  There are courses to make visible ...");
-        foreach ($courses as $course) {
-            if (!$DB->set_field('course', 'visible', 1, array('id' => $course->id))) {
-                mtrace("    {$course->id}: {$course->shortname} could not be updated for some reason.");
-            } else {
-                mtrace("    {$course->id}: {$course->shortname} is now visible");
-            }
-        }
+        $this->resetAfterTest(true);
+
+        $today = time();
+        // Course 2 should be hidden.
+        $yesterday = time() - (24 * 60 * 60);
+        $tomorrow = time() + (24 * 60 * 60);
+
+        $properties = [
+            'startdate' => $today,
+            'enddate' => $tomorrow,
+            'visible' => 0
+        ];
+
+        $this->courses[1] = $this->getDataGenerator()->create_course($properties);
+
+        $properties = [
+            'startdate' => $tomorrow,
+            'enddate' => $tomorrow,
+            'visible' => 0
+        ];
+
+        $this->courses[2] = $this->getDataGenerator()->create_course($properties);
+
+        $properties = [
+            'startdate' => $yesterday,
+            'enddate' => $today,
+            'visible' => 1
+        ];
+
+        $this->courses[3] = $this->getDataGenerator()->create_course($properties);
+
+        $properties = [
+            'startdate' => $yesterday,
+            'enddate' => $yesterday,
+            'visible' => 1
+        ];
+
+        $this->courses[4] = $this->getDataGenerator()->create_course($properties);
+
+        $properties = [
+            'startdate' => $today,
+            'enddate' => $today,
+            'visible' => 0
+        ];
+
+        $this->courses[5] = $this->getDataGenerator()->create_course($properties);
+    }
+
+
+    /**
+     * Test that the update_course_visibility_task hides/shows courses
+     * as expected.
+     */
+    public function test_update_course_visibility_none() {
+        global $CFG;
+
+        $task = \core\task\manager::get_scheduled_task('\\local_culcourse_visibility\\task\\update_course_visibility');
+        $this->assertInstanceOf('\local_culcourse_visibility\task\update_course_visibility', $task);
+        // Change task settings.
+        set_config('showcourses', 0, 'local_culcourse_visibility');
+        set_config('hidecourses', 0, 'local_culcourse_visibility');
+        $task->execute();
+        $this->reload_courses();
+
+        // Course 1 should be hidden.
+        // Course 2 should be hidden.
+        // Course 3 should be visible.
+        // Course 4 should be visible.
+        // Course 5 should be hidden.
+        $this->assertEquals(0, $this->courses[1]->visible);
+        $this->assertEquals(0, $this->courses[2]->visible);
+        $this->assertEquals(1, $this->courses[3]->visible);
+        $this->assertEquals(1, $this->courses[4]->visible);
+        $this->assertEquals(0, $this->courses[5]->visible);
     }
 
     /**
-     * Hide course if the end date has become due.
-     *
-     * @return void
+     * Test that the update_course_visibility_task hides/shows courses
+     * as expected.
      */
-    private function hide_courses($courses) {
+    public function test_update_course_visibility_start() {
+        global $CFG;
+
+        $task = \core\task\manager::get_scheduled_task('\\local_culcourse_visibility\\task\\update_course_visibility');
+        $this->assertInstanceOf('\local_culcourse_visibility\task\update_course_visibility', $task);
+        // Change task settings.
+        set_config('showcourses', 1, 'local_culcourse_visibility');
+        set_config('hidecourses', 0, 'local_culcourse_visibility');
+        $task->execute();$this->reload_courses();
+        $this->reload_courses();
+
+        // Course 1 should be visible.
+        // Course 2 should be hidden.
+        // Course 3 should be visible.
+        // Course 4 should be visible.
+        // Course 5 should be visible.
+        $this->assertEquals(1, $this->courses[1]->visible);
+        $this->assertEquals(0, $this->courses[2]->visible);
+        $this->assertEquals(1, $this->courses[3]->visible);
+        $this->assertEquals(1, $this->courses[4]->visible);
+        $this->assertEquals(1, $this->courses[5]->visible);
+    }
+
+    /**
+     * Test that the update_course_visibility_task hides/shows courses
+     * as expected.
+     */
+    public function test_update_course_visibility_end() {
+        global $CFG;
+
+        $task = \core\task\manager::get_scheduled_task('\\local_culcourse_visibility\\task\\update_course_visibility');
+        $this->assertInstanceOf('\local_culcourse_visibility\task\update_course_visibility', $task);
+
+        // Change task settings.
+        set_config('showcourses', 0, 'local_culcourse_visibility');
+        set_config('hidecourses', 1, 'local_culcourse_visibility');
+        $task->execute();
+        $this->reload_courses();
+
+        // Course 1 should be hidden.
+        // Course 2 should be hidden.
+        // Course 3 should be hidden.
+        // Course 4 should be visible.
+        // Course 5 should be hidden.
+        $this->assertEquals(0, $this->courses[1]->visible);
+        $this->assertEquals(0, $this->courses[2]->visible);
+        $this->assertEquals(0, $this->courses[3]->visible);
+        $this->assertEquals(1, $this->courses[4]->visible);
+        $this->assertEquals(0, $this->courses[5]->visible);
+    }
+
+    /**
+     * Test that the update_course_visibility_task hides/shows courses
+     * as expected.
+     */
+    public function test_update_course_visibility_both() {
+        global $CFG;
+
+        $task = \core\task\manager::get_scheduled_task('\\local_culcourse_visibility\\task\\update_course_visibility');
+        $this->assertInstanceOf('\local_culcourse_visibility\task\update_course_visibility', $task);
+
+        // Change task settings.
+        set_config('showcourses', 1, 'local_culcourse_visibility');
+        set_config('hidecourses', 1, 'local_culcourse_visibility');
+        $task->execute();
+        $this->reload_courses();
+
+        // Course 1 should be visible.
+        // Course 2 should be hidden.
+        // Course 3 should be hidden.
+        // Course 4 should be visible.
+        // Course 5 should be hidden.
+        $this->assertEquals(1, $this->courses[1]->visible);
+        $this->assertEquals(0, $this->courses[2]->visible);
+        $this->assertEquals(0, $this->courses[3]->visible);
+        $this->assertEquals(1, $this->courses[4]->visible);
+        $this->assertEquals(0, $this->courses[5]->visible);
+    }
+
+    /**
+     * Reloads the courses array from the DB.
+     *
+     * @return void.
+     */
+    private function reload_courses() {
         global $DB;
 
-        mtrace("\n  There are courses to hide ...");
-        foreach ($courses as $course) {
-            if (!$DB->set_field('course', 'visible', 0, array('id' => $course->id))) {
-                mtrace("    {$course->id}: {$course->shortname} could not be updated for some reason.");
-            } else {
-                mtrace("    {$course->id}: {$course->shortname} is now hidden");
-            }
-        }
+        $courses = $DB->get_records('course');
+        // Reset the array keys. NB The front page will be $this->courses[0].
+        $this->courses = array_values($courses);
     }
 }
