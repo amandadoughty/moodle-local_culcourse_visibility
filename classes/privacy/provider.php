@@ -15,18 +15,34 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * CUL Course Visibility version information
+ * Privacy Subsystem implementation for local_culcourse_visibility.
  *
  * @package    local_culcourse_visibility
- * @copyright  2016 Tim Gagen and Amanda Doughty
+ * @copyright  2018 Amanda Doughty
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- *
  */
+
+namespace local_culcourse_visibility\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2017080205; // The current plugin version (Date: YYYYMMDDXX).
-$plugin->requires  = 2014110400; // Requires this Moodle version.
-$plugin->component = 'local_culcourse_visibility'; // Full name of the plugin (used for diagnostics).
-$plugin->maturity = MATURITY_STABLE;
-$plugin->release = '2.1.2 (Build: 2017080205)';
+/**
+ * Privacy Subsystem for local_culcourse_visibility implementing null_provider.
+ *
+ * @copyright  2018 Amanda Doughty
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class provider implements \core_privacy\local\metadata\null_provider {
+	
+	use \core_privacy\local\legacy_polyfill;
+
+    /**
+     * Get the language string identifier with the component's language
+     * file to explain why this plugin stores no data.
+     *
+     * @return  string
+     */
+    public static function _get_reason() {
+        return 'privacy:metadata';
+    }
+}
