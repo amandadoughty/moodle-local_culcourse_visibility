@@ -102,7 +102,7 @@ class local_culcourse_visibility_update_course_visibility_testcase extends advan
         global $CFG;
 
         $this->resetAfterTest(true);
-        ob_start();      
+        ob_start();
         $task = \core\task\manager::get_scheduled_task('\\local_culcourse_visibility\\task\\update_course_visibility');
         $this->assertInstanceOf('\local_culcourse_visibility\task\update_course_visibility', $task);
         // Change task settings.
@@ -194,7 +194,7 @@ class local_culcourse_visibility_update_course_visibility_testcase extends advan
 
         $this->resetAfterTest(true);
         ob_start();
-        $task = \core\task\manager::get_scheduled_task('\\local_culcourse_visibility\\task\\update_course_visibility');        
+        $task = \core\task\manager::get_scheduled_task('\\local_culcourse_visibility\\task\\update_course_visibility');
         $this->assertInstanceOf('\local_culcourse_visibility\task\update_course_visibility', $task);
 
         // Change task settings.

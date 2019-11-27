@@ -30,3 +30,4 @@ $plugin->requires  = 2014110400; // Requires this Moodle version.
 $plugin->component = 'local_culcourse_visibility'; // Full name of the plugin (used for diagnostics).
 $plugin->maturity = MATURITY_STABLE;
 $plugin->release = '2.1.2 (Build: 2017080205)';
+

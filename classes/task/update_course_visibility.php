@@ -96,7 +96,7 @@ class update_course_visibility extends \core\task\scheduled_task {
      * Make course visible if the start date has become due.
      *
      * @param array $courses
-     * 
+     *
      * @return void
      */
     private function show_courses($courses) {
@@ -116,7 +116,7 @@ class update_course_visibility extends \core\task\scheduled_task {
      * Hide course if the end date has become due.
      *
      * @param array $courses
-     * 
+     *
      * @return void
      */
     private function hide_courses($courses) {
