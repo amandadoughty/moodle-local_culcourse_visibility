@@ -230,3 +230,4 @@ class local_culcourse_visibility_update_course_visibility_testcase extends advan
         $this->courses = array_values($courses);
     }
 }
+

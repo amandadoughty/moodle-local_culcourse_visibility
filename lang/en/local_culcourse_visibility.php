@@ -30,3 +30,4 @@ $string['privacy:metadata'] = 'The CUL Course Visibility plugin is a scheduled t
 $string['showcourses'] = 'Show courses';
 $string['showcourses_desc'] = 'Update course visibility based on start date';
 $string['updatecoursevisibility'] = 'Update course visibility based on start date';
+
