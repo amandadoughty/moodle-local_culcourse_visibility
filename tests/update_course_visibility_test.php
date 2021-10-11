@@ -32,6 +32,7 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @package local_culcourse_visibility
  * @copyright 2017 Amanda Doughty
+ * @group local_culcourse_visibility
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class local_culcourse_visibility_update_course_visibility_testcase extends advanced_testcase {
@@ -42,7 +43,7 @@ class local_culcourse_visibility_update_course_visibility_testcase extends advan
     /**
      * Setup function - we will create courses with differing start and end dates.
      */
-    protected function setUp() {
+    protected function setUp(): void {
         global $DB;
 
         $this->resetAfterTest(true);
