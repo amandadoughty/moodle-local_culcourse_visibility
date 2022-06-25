@@ -1,3 +1,9 @@
+### Date: 		2022-Jun-25
+### Version:	v2022062500
+### Release:    4.0.0
+
+- Updated class names
+- 
 Changes in version 2.1.2 (20170805)
 -----------------------------------
 - Added Privacy API
