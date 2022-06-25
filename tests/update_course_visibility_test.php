@@ -22,10 +22,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace local_culcourse_visibility;
 
-// ... vendor/bin/phpunit local_culcourse_visibility_update_course_visibility_testcase
-// local/culcourse_visibility/tests/update_course_visibility_test.php.
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * Test class for update course visibility task.
@@ -35,7 +34,7 @@ defined('MOODLE_INTERNAL') || die();
  * @group local_culcourse_visibility
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class local_culcourse_visibility_update_course_visibility_testcase extends advanced_testcase {
+class update_course_visibility_test extends \advanced_testcase {
 
     /** @var array of stdClass $course New courses created to test task */
     protected $courses = [];
@@ -44,7 +43,6 @@ class local_culcourse_visibility_update_course_visibility_testcase extends advan
      * Setup function - we will create courses with differing start and end dates.
      */
     protected function setUp(): void {
-        global $DB;
 
         $this->resetAfterTest(true);
 
